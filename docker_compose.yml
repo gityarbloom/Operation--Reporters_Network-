@@ -1,0 +1,15 @@
+services:
+
+
+  # app:
+  #   environment:
+  #     OCR_URI: http://ocr_server:9000/ocr
+
+
+  ocr_server:
+    image: stttzu/ocr-server
+    ports:
+      - "9000:9000"
+    environment:
+      OCR_URI: http://ocr_server:9000/ocr
+
