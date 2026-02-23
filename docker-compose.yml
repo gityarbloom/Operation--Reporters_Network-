@@ -1,0 +1,16 @@
+services:
+
+
+  ocr_server:
+    build: ./ocr
+    container_name: ocr_server
+    ports:
+      - "9000:9000"
+    environment:
+      OCR_URI: http://ocr_server:9000/ocr
+
+
+
+  # app:
+  #   environment:
+  #     OCR_URI: http://ocr_server:9000/ocr

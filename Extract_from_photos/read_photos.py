@@ -13,7 +13,3 @@ def send_image_to_ocr(image_path: str):
     with open(image_path, "rb") as f:
         response = requests.post(OCR_URI, files={"file": f})
     return response.json()
-
-
-result = send_image_to_ocr("tweet_images/tweet_0.png")
-print(result)
