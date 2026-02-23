@@ -1,0 +1,35 @@
+FROM python:3.10-slim
+
+# Install Tesseract and language packs
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-heb \
+    tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Requirements for your specific pipeline
+# Includes: pytesseract, pillow, pymongo, kafka-python, elasticsearch
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python", "processor.py"]
+
+
+
+##########################################################
+
+
+
+
+services:
+  ocr-processor:
+    build: .
+    volumes:
+      - ./my_images:/app/data/images  # Mount local folder to container
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - MONGO_URI=mongodb://mongo:27017/
