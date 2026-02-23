@@ -56,7 +56,7 @@ services:
 
 
   ingestion:
-    build: ./Extract_from_photos/
+    build: ./extract_from_photos/
     container_name: ingestion_container
     environment:
       FOLDER_PATH: "tweet_images/"
@@ -74,3 +74,4 @@ services:
 
 volumes:
   kafka_kraft:
+  mongodb_data:
