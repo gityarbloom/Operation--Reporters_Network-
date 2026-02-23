@@ -6,6 +6,24 @@ from model_ocr_ngine import OCREngine
 import os
 
 
+
+pathsss = IngestionConfig()
+
+folder_path = str(pathsss.folder_path)
+
+mdb_loader_uri = str(pathsss.mongo_loader_uri)
+mongo_loader_sending = MongoLoaderClient(mdb_loader_uri)
+
+m_data_extractor = MetadataExtractor()
+
+kafka_config = pathsss.kafka_config
+kafka_producer = KafkaPublisher(kafka_config)
+
+ocr_uri = str(pathsss.ocr_uri)
+ocr_engine = OCREngine(ocr_uri)
+
+
+
 def get_all_files_path(folder_path: str):
     all_files_path = []
     for f in os.listdir(folder_path):
@@ -18,17 +36,7 @@ def get_all_files_path(folder_path: str):
 def read_to_binary(file_path: str):
     with open(file_path, "rb") as f:
         return f.read()
-    
 
-
-pathsss = IngestionConfig()
-mongo_loader_sending = MongoLoaderClient()
-m_data_extractor = MetadataExtractor()
-
-
-ocr_uri = str(pathsss.ocr_uri)
-folder_path = str(pathsss.folder_path)
-kafka_config = pathsss.kafka_config
-mdb_loader_uri = str(pathsss.mongo_loader_uri)
-
-kafka_producer = KafkaPublisher(kafka_config)
+def extract_text(image_path):
+    raw_text = ocr_engine.get_extracted_text(image_path=image_path)
+    return raw_text

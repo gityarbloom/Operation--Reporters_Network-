@@ -1,6 +1,5 @@
 services:
 
-
   ocr_server:
     build: ./ocr
     container_name: ocr_server
@@ -10,10 +9,29 @@ services:
       OCR_URI: http://ocr_server:9000/ocr
 
 
+  mongodb:
+    image: mongo:latest
+    container_name: images-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: images-user
+      MONGO_INITDB_ROOT_PASSWORD: images-password
+      MONGO_DATABASE_NAME: images-db
+      MONGO_COLLECTION_NAME: images-collection
+      MONGO_URI: mongodb://images-user:images-password@mongodb:27017    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "images-user", "--password", "images-password", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
   kafka:
     image: confluentinc/cp-kafka:7.8.3
-    container_name: pizza_kafka
+    container_name: images_kafka
     ports:
       - "9092:9092"
     environment:
@@ -37,7 +55,22 @@ services:
       retries: 5
 
 
-  # app:
-  #   environment:
-  #     OCR_URI: http://ocr_server:9000/ocr
-  #     KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  ingestion:
+    build: ./Extract_from_photos/
+    container_name: ingestion_container
+    environment:
+      FOLDER_PATH: "tweet_images/"
+      OCR_URI: http://ocr_server:9000/ocr
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_GROUP_ID: images-group
+      MONGO_LOADER_URI: "http://mongo_loader:8200"
+      MONGO_DATABASE_NAME: images-db
+      MONGO_COLLECTION_NAME: images-collection
+      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+    depends_on:
+      - kafka
+      - mongo_loader
+      - mongodb
+
+volumes:
+  kafka_kraft:
