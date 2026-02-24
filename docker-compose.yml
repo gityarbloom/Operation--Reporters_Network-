@@ -21,7 +21,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: images-password
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
-      MONGO_URI: mongodb://images-user:images-password@mongodb:27017    restart: unless-stopped
+      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--username", "images-user", "--password", "images-password", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -63,7 +64,7 @@ services:
       OCR_URI: http://ocr_server:9000/ocr
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_GROUP_ID: images-group
-      MONGO_LOADER_URI: "http://mongo_loader:8200"
+      MONGO_LOADER_URI: "http://mongo_loader:8200/set_image"
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
       MONGO_URI: mongodb://images-user:images-password@mongodb:27017

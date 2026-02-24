@@ -20,8 +20,9 @@ class KafkaPublisher:
             value = json.dumps(data).encode("utf-8")
             self.prod.produce(topic=topic_name, value=value, callback=self.delivery_report)
             self.prod.poll(0)
-        except BufferError as e:
-            print(f"\nLocal producer queue is full: {e}\n")
+            return "\nSuccesful sending to kafka\n"
+        except Exception as e:
+            raise Exception(str(e))
 
     def close(self):
         self.prod.flush()
