@@ -1,8 +1,8 @@
-from model_mongo_loader_sending import MongoLoaderClient
-from model_metadata_extractor import MetadataExtractor
-from model_kafka_publisher import KafkaPublisher
-from model_ocr_ngine import OCREngine
-from model_Ingestion_config import IngestionConfig
+from mongo_loader_sending import MongoLoaderClient
+from metadata_extractor import MetadataExtractor
+from kafka_publisher import KafkaPublisher
+from ocr_ngine import OCREngine
+from ingestion_config import IngestionConfig
 import os
 
 

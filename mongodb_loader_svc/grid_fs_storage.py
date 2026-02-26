@@ -1,6 +1,6 @@
 from gridfs import GridFS
 from pymongo import MongoClient
-from model_grid_fs_config import GridFSConfig
+from grid_fs_config import GridFSConfig
 
 
 

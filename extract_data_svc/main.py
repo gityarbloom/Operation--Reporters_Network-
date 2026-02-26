@@ -1,4 +1,4 @@
-from model_ingestion_orchestrator import *
+from ingestion_orchestrator import *
 import time
 
 time.sleep(15)
@@ -20,3 +20,5 @@ for i in range(len(images_path_list)):
     print(send_to_kafka)
 
 kafka_producer.close()
+
+print("\n'extract_data_service' operation terminated. \nThe server has closed because it has completed all tasks.")

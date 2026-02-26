@@ -1,17 +1,17 @@
 services:
 
-  ocr_server:
-    build: ./ocr
-    container_name: ocr_container
+  ocr_api_svc:
+    build: ./ocr_api_svc
+    container_name: ocr_api_svc_container
     ports:
       - "9000:9000"
     environment:
-      OCR_URI: http://ocr_server:9000/ocr
+      OCR_URI: http://ocr_api_svc:9000/ocr
 
 
-  mongodb:
+  mongodb_svc:
     image: mongo:latest
-    container_name: mongodb_container
+    container_name: mongodb_svc_container
     ports:
       - "27017:27017"
     volumes:
@@ -21,7 +21,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: images-password
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
-      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+      MONGO_URI: mongodb://images-user:images-password@mongodb_svc:27017
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--username", "images-user", "--password", "images-password", "--eval", "db.adminCommand('ping')"]
@@ -56,35 +56,34 @@ services:
       retries: 5
 
 
-  ingestion:
-    build: ./extract_from_photos/
-    container_name: ingestion_container
+  extract_data_svc:
+    build: ./extract_data_svc/
+    container_name: extract_data_svc_container
     environment:
       FOLDER_PATH: "tweet_images/"
-      OCR_URI: http://ocr_server:9000/ocr
+      OCR_URI: http://ocr_api_svc:9000/ocr
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_GROUP_ID: images-group
-      MONGO_LOADER_URI: "http://mongodb_loader:8200/set_image"
+      MONGO_LOADER_URI: "http://mongodb_loader_svc:8200/set_image"
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
-      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+      MONGO_URI: mongodb://images-user:images-password@mongodb_svc:27017
     depends_on:
       - kafka
-      - mongodb_loader
-      - mongodb
+      - mongodb_loader_svc
+      - mongodb_svc
   
-  mongodb_loader:
-    build: ./mongodb_loader/
+  mongodb_loader_svc:
+    build: ./mongodb_loader_svc/
     ports:
       - "8200:8200"
-    container_name: mongodb_loader_container
+    container_name: mongodb_loader_svc_container
     environment:
-      MONGO_LOADER_URI: "http://mongodb_loader:8200/set_image"
+      MONGO_LOADER_URI: "http://mongodb_loader_svc:8200/set_image"
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
-      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+      MONGO_URI: mongodb://images-user:images-password@mongodb_svc:27017
     depends_on:
-      - mongodb
+      - mongodb_svc
 
 
 

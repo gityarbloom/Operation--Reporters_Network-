@@ -9,7 +9,7 @@ class IngestionConfig:
     def __init__(self):
         self.ocr_uri = self.get_ocr_uri()
         self.folder_path = self.get_folder_path()
-        self.kafka_config = self.get_kafka_config()
+        self.kafka_config = self.get_producer_config()
         self.mongo_loader_uri = self.get_mongo_loader_uri()
 
     @staticmethod
@@ -23,7 +23,7 @@ class IngestionConfig:
         return folder_path
     
     @staticmethod
-    def get_kafka_config():
+    def get_producer_config():
         kafka_boots_etc = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
         kafka_config = {"bootstrap.servers": kafka_boots_etc}
         return kafka_config

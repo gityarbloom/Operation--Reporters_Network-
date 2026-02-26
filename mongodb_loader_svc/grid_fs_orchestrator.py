@@ -1,4 +1,4 @@
-from model_grid_fs_storage import *
+from grid_fs_storage import *
 from fastapi import APIRouter, UploadFile, File
 from typing import Annotated
 import uuid
