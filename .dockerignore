@@ -18,6 +18,7 @@ dist
 # Ignore development and temporary files
 *.log
 *.env
+**.env
 npm-debug.log
 yarn-error.log
 

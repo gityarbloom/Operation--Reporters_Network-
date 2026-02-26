@@ -2,7 +2,7 @@ services:
 
   ocr_server:
     build: ./ocr
-    container_name: ocr_server
+    container_name: ocr_container
     ports:
       - "9000:9000"
     environment:
@@ -11,7 +11,7 @@ services:
 
   mongodb:
     image: mongo:latest
-    container_name: images-mongo
+    container_name: mongodb_container
     ports:
       - "27017:27017"
     volumes:
@@ -32,7 +32,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.8.3
-    container_name: images_kafka
+    container_name: kafka_container
     ports:
       - "9092:9092"
     environment:
@@ -64,14 +64,29 @@ services:
       OCR_URI: http://ocr_server:9000/ocr
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_GROUP_ID: images-group
-      MONGO_LOADER_URI: "http://mongo_loader:8200/set_image"
+      MONGO_LOADER_URI: "http://mongodb_loader:8200/set_image"
       MONGO_DATABASE_NAME: images-db
       MONGO_COLLECTION_NAME: images-collection
       MONGO_URI: mongodb://images-user:images-password@mongodb:27017
     depends_on:
       - kafka
-      - mongo_loader
+      - mongodb_loader
       - mongodb
+  
+  mongodb_loader:
+    build: ./mongodb_loader/
+    ports:
+      - "8200:8200"
+    container_name: mongodb_loader_container
+    environment:
+      MONGO_LOADER_URI: "http://mongodb_loader:8200/set_image"
+      MONGO_DATABASE_NAME: images-db
+      MONGO_COLLECTION_NAME: images-collection
+      MONGO_URI: mongodb://images-user:images-password@mongodb:27017
+    depends_on:
+      - mongodb
+
+
 
 volumes:
   kafka_kraft:

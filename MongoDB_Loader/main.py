@@ -4,7 +4,7 @@ import uvicorn
 
 
 
-my_router = GridFSOrchestrator
+my_router = GridFSOrchestrator().router
 
 app = FastAPI()
 app.include_router(my_router)

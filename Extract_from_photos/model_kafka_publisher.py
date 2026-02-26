@@ -12,8 +12,8 @@ class KafkaPublisher:
         if err:
             print(f"❌ Delivery failed: {err}")
         else:
-            print(f"✅ Delivered to {msg.topic()} ")
-            print(f"[{msg.partition()}] @ offset {msg.offset()}")
+            print(f"✅ Delivered to Topic names: '{msg.topic()}' in KAFKA")
+
 
     def send_to_kafka(self, topic_name: str, data: dict):
         try:
@@ -26,6 +26,7 @@ class KafkaPublisher:
 
     def close(self):
         self.prod.flush()
+        self.prod.close()
 
 
 
